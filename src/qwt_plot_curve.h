@@ -304,6 +304,7 @@ class QWT_EXPORT QwtPlotCurve
         const QRectF& canvasRect, int from, int to ) const QWT_OVERRIDE;
 
     virtual QwtGraphic legendIcon( int index, const QSizeF& ) const QWT_OVERRIDE;
+    virtual QwtText trackerInfoAt( int, const QPointF& ) const QWT_OVERRIDE;
 
   protected:
 

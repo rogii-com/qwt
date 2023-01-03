@@ -825,9 +825,17 @@ QRect QwtPicker::trackerRect( const QFont& font ) const
         return QRect();
 
     const QSizeF textSize = text.textSize( font );
-    QRect textRect( 0, 0, qwtCeil( textSize.width() ), qwtCeil( textSize.height() ) );
 
+    const int w = qwtCeil( textSize.width() );
+    const int h = qwtCeil( textSize.height() );
+
+    return trackerRect( QSize( w, h ) );
+}
+
+QRect QwtPicker::trackerRect( const QSize& size ) const
+{
     const QPoint& pos = m_data->trackerPosition;
+    QRect textRect( 0, 0, size.width(), size.height() );
 
     int alignment = 0;
     if ( isActive() && m_data->pickedPoints.count() > 1

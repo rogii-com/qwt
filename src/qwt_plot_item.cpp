@@ -647,6 +647,47 @@ QList< QwtLegendData > QwtPlotItem::legendData() const
 }
 
 /*!
+   \brief Return all information, that is needed to represent
+          the item on the tracker of a QwtPlotPicker
+
+   The data being returned is a list of QVariants that makes it
+   possible to overload and reimplement trackerData() to
+   return almost any type of information, that is understood
+   by the receivig picker.
+
+   The default implementation in QwtPlotPicker puts each
+   element of the list into a single line, while each line might
+   consist of QwtText or QwtGraphic elements.
+
+   \param pos Current position of the picker
+ */
+
+QList< QVariant > QwtPlotItem::trackerData( int attributes, const QPointF& pos ) const
+{
+    QList< QVariant > data;
+
+    const QwtText label = trackerInfoAt( attributes, pos );
+    if ( !label.isEmpty() )
+    {
+        const QwtGraphic graphic = legendIcon( 0, legendIconSize() );
+        if ( !graphic.isNull() )
+            data += QVariant::fromValue( graphic );
+
+        data += QVariant::fromValue( label );
+    }
+
+    return data;
+}
+
+QwtText QwtPlotItem::trackerInfoAt( int attributes, const QPointF& pos ) const
+{
+    Q_UNUSED( pos );
+    Q_UNUSED( attributes );
+
+    return QwtText();
+}
+
+/*!
    \brief Update the item to changes of the axes scale division
 
    Update the item, when the axes of plot have changed.

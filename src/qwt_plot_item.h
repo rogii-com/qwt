@@ -146,7 +146,10 @@ class QWT_EXPORT QwtPlotItem
      */
     enum ItemAttribute
     {
-        //! The item is represented on the legend.
+        /*!
+            The item is represented on the legend.
+            \sa legendData
+         */
         Legend = 0x01,
 
         /*!
@@ -161,7 +164,13 @@ class QWT_EXPORT QwtPlotItem
            its bounding rectangle.
            \sa getCanvasMarginHint()
          */
-        Margins = 0x04
+        Margins = 0x04,
+
+        /*!
+            The item is represented on the tracker.
+            \sa trackerData
+         */
+        Tracker = 0x08
     };
 
     Q_DECLARE_FLAGS( ItemAttributes, ItemAttribute )
@@ -288,8 +297,10 @@ class QWT_EXPORT QwtPlotItem
     QRectF paintRect( const QwtScaleMap&, const QwtScaleMap& ) const;
 
     virtual QList< QwtLegendData > legendData() const;
+    virtual QList< QVariant > trackerData( int attributes, const QPointF& ) const;
 
     virtual QwtGraphic legendIcon( int index, const QSizeF& ) const;
+    virtual QwtText trackerInfoAt( int attributes, const QPointF& ) const;
 
   protected:
     QwtGraphic defaultIcon( const QBrush&, const QSizeF& ) const;

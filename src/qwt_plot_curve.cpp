@@ -135,6 +135,7 @@ QwtPlotCurve::~QwtPlotCurve()
 void QwtPlotCurve::init()
 {
     setItemAttribute( QwtPlotItem::Legend );
+    setItemAttribute( QwtPlotItem::Tracker );
     setItemAttribute( QwtPlotItem::AutoScale );
 
     m_data = new PrivateData;
@@ -1087,6 +1088,14 @@ int QwtPlotCurve::closestPoint( const QPointF& pos, double* dist ) const
         *dist = std::sqrt( dmin );
 
     return index;
+}
+
+QwtText QwtPlotCurve::trackerInfoAt( int attributes, const QPointF& pos ) const
+{
+    Q_UNUSED( pos );
+    Q_UNUSED( attributes );
+
+    return title();
 }
 
 /*!

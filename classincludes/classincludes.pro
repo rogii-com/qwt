@@ -129,6 +129,7 @@ contains(QWT_CONFIG, QwtPlot) {
         QwtPlotSpectroCurve \
         QwtPlotSpectrogram \
         QwtPlotTextLabel \
+        QwtPlotTracker \
         QwtPlotTradingCurve \
         QwtPlotVectorField \
         QwtPlotZoneItem \

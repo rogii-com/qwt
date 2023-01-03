@@ -143,6 +143,7 @@ contains(QWT_CONFIG, QwtPlot) {
         qwt_plot_abstract_canvas.h \
         qwt_plot_canvas.h \
         qwt_plot_panner.h \
+        qwt_plot_tracker.h \
         qwt_plot_picker.h \
         qwt_plot_zoomer.h \
         qwt_plot_magnifier.h \
@@ -195,6 +196,7 @@ contains(QWT_CONFIG, QwtPlot) {
         qwt_plot_abstract_canvas.cpp \
         qwt_plot_canvas.cpp \
         qwt_plot_panner.cpp \
+        qwt_plot_tracker.cpp \
         qwt_plot_rasteritem.cpp \
         qwt_plot_picker.cpp \
         qwt_plot_zoomer.cpp \
