@@ -1090,6 +1090,40 @@ int QwtPlotCurve::closestPoint( const QPointF& pos, double* dist ) const
     return index;
 }
 
+int QwtPlotCurve::adjacentPoint( Qt::Orientation orientation, qreal value ) const
+{
+    const QwtSeriesData< QPointF >* data = this->data();
+    if ( data == nullptr )
+        return -1;
+
+    if ( orientation == Qt::Horizontal )
+    {
+        struct compareX
+        {
+            inline bool operator()( const double x, const QPointF& pos ) const
+            {
+                return ( x < pos.x() );
+            }
+        };
+
+        return qwtUpperSampleIndex< QPointF >( *data, value, compareX() );
+    }
+    else
+    {
+        struct compareY
+        {
+            inline bool operator()( const double y, const QPointF& pos ) const
+            {
+                return ( y < pos.y() );
+            }
+        };
+
+        return qwtUpperSampleIndex< QPointF >( *data, value, compareY() );
+    }
+
+    return -1;
+}
+
 QwtText QwtPlotCurve::trackerInfoAt( int attributes, const QPointF& pos ) const
 {
     Q_UNUSED( pos );

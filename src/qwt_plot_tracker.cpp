@@ -241,6 +241,9 @@ namespace
 
             for ( int i = count() - 1; i >= index; i-- )
                 delete takeAt( i );
+
+            invalidate();
+            activate();
         }
     };
 }

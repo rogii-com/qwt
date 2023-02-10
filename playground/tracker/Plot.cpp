@@ -35,14 +35,6 @@ static const char* colors[] =
 
 namespace
 {
-    struct compareX
-    {
-        inline bool operator()( const double x, const QPointF& pos ) const
-        {
-            return ( x < pos.x() );
-        }
-    };
-
     class CurveData : public QwtSyntheticPointData
     {
       public:
@@ -95,13 +87,13 @@ namespace
 
             double y;
 
-            const int index = qwtUpperSampleIndex< QPointF >(
-                *data(), pos.x(), compareX() );
+            const int index = adjacentPoint( Qt::Horizontal, x );
+
             if ( index == -1 )
             {
                 const QPointF last = sample( dataSize() - 1 );
 
-                if ( x != last.x() )
+                if ( pos.x() != last.x() )
                     return QwtText();
 
                 y = last.y();
@@ -109,7 +101,7 @@ namespace
             else
             {
                 const QLineF line( sample( index - 1 ), sample( index ) );
-                y = line.pointAt( x - line.p1().x() / line.dx() ).y();
+                y = line.pointAt( ( x - line.p1().x() ) / line.dx() ).y();
             }
 
             if ( qAbs( y ) < 10e-4 )
