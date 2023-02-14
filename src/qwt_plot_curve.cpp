@@ -80,6 +80,7 @@ class QwtPlotCurve::PrivateData
         , symbol( NULL )
         , pen( Qt::black )
         , paintAttributes( QwtPlotCurve::ClipPolygons | QwtPlotCurve::FilterPoints )
+        , trackerMode( QwtPlotCurve::TrackClosestPoint )
     {
         curveFitter = new QwtSplineCurveFitter;
     }
@@ -103,6 +104,7 @@ class QwtPlotCurve::PrivateData
     QwtPlotCurve::PaintAttributes paintAttributes;
 
     QwtPlotCurve::LegendAttributes legendAttributes;
+    QwtPlotCurve::TrackerMode trackerMode;
 };
 
 /*!
@@ -193,6 +195,16 @@ void QwtPlotCurve::setLegendAttribute( LegendAttribute attribute, bool on )
         qwtUpdateLegendIconSize( this );
         legendChanged();
     }
+}
+
+void QwtPlotCurve::setTrackerMode( TrackerMode mode )
+{
+    m_data->trackerMode = mode;
+}
+
+QwtPlotCurve::TrackerMode QwtPlotCurve::trackerMode() const
+{
+    return m_data->trackerMode;
 }
 
 /*!
@@ -1045,7 +1057,7 @@ double QwtPlotCurve::baseline() const
 
    \param pos Position, where to look for the closest curve point
    \param dist If dist != NULL, closestPoint() returns the distance between
-              the position and the closest curve point
+              the position and the closest curve point in paint device coordinates
    \return Index of the closest curve point, or -1 if none can be found
           ( f.e when the curve has no points )
    \note closestPoint() implements a dumb algorithm, that iterates
@@ -1124,12 +1136,116 @@ int QwtPlotCurve::adjacentPoint( Qt::Orientation orientation, qreal value ) cons
     return -1;
 }
 
+qreal QwtPlotCurve::interpolatedValueAt( Qt::Orientation orientation, double pos ) const
+{
+    const QRectF br = boundingRect();
+    if ( br.width() <= 0.0 )
+        return qQNaN();
+
+    double v;
+
+    if ( orientation == Qt::Horizontal )
+    {
+        if ( pos < br.left() || pos > br.right() )
+            return qQNaN();
+
+        const int index = adjacentPoint( orientation, pos );
+
+        if ( index == -1 )
+        {
+            const QPointF last = sample( dataSize() - 1 );
+
+            if ( pos != last.x() )
+                return qQNaN();
+
+            v = last.y();
+        }
+        else
+        {
+            const QLineF line( sample( index - 1 ), sample( index ) );
+            v = line.pointAt( ( pos - line.p1().x() ) / line.dx() ).y();
+        }
+    }
+    else
+    {
+        if ( pos < br.top() || pos > br.bottom() )
+            return qQNaN();
+
+        const int index = adjacentPoint( orientation, pos );
+
+        if ( index == -1 )
+        {
+            const QPointF last = sample( dataSize() - 1 );
+
+            if ( pos != last.y() )
+                return qQNaN();
+
+            v = last.x();
+        }
+        else
+        {
+            const QLineF line( sample( index - 1 ), sample( index ) );
+            v = line.pointAt( ( pos - line.p1().y() ) / line.dy() ).x();
+        }
+    }
+
+    if ( qAbs( v ) < 10e-4 )
+        v = 0.0;
+
+    return v;
+}
+
+
 QwtText QwtPlotCurve::trackerInfoAt( int attributes, const QPointF& pos ) const
 {
-    Q_UNUSED( pos );
-    Q_UNUSED( attributes );
+    const QRectF br = boundingRect();
+    if ( br.width() <= 0.0 )
+        return QwtText();
 
-    return title();
+    switch( m_data->trackerMode )
+    {
+        case QwtPlotCurve::TrackInterpolatedX:
+        {
+            const double x = interpolatedValueAt( Qt::Vertical, pos.y() );
+            if ( qIsNaN( x ) )
+                return QwtText();
+
+            return trackerValueText( xAxis(), x );
+        }
+
+        case QwtPlotCurve::TrackInterpolatedY:
+        {
+            const double y = interpolatedValueAt( Qt::Horizontal, pos.x() );
+            if ( qIsNaN( y ) )
+                return QwtText();
+
+            return trackerValueText( yAxis(), y );
+        }
+
+        case QwtPlotCurve::TrackClosestPoint:
+        {
+            const auto plot = this->plot();
+
+            // searching in paint device coordinates
+            const double x = plot->transform( xAxis(), pos.x() );
+            const double y = plot->transform( yAxis(), pos.y() );
+
+            double dist;
+            const int index = closestPoint( QPointF( x, y ), &dist );
+
+            const double maxDist = 25.0; // should be adjustable for the user
+
+            if ( index < 0 || dist >= maxDist )
+                return QwtText();
+
+            const QPointF curvePos = sample( index );
+
+            return trackerValueText( xAxis(), curvePos.x() )
+                + ", " + trackerValueText( yAxis(), curvePos.y() );
+        }
+    }
+
+    return QwtPlotItem::trackerInfoAt( attributes, pos );
 }
 
 /*!

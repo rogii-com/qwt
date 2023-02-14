@@ -304,6 +304,7 @@ class QWT_EXPORT QwtPlotItem
 
   protected:
     QwtGraphic defaultIcon( const QBrush&, const QSizeF& ) const;
+    virtual QString trackerValueText( QwtAxisId, double value ) const;
 
   private:
     Q_DISABLE_COPY(QwtPlotItem)

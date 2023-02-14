@@ -216,7 +216,8 @@ namespace
                     const QPointF trackerPos(
                         pos[ plotItem->xAxis() ], pos[ plotItem->yAxis() ] );
 
-                    const QList< QVariant > data = plotItem->trackerData( 0, trackerPos );
+                    const QList< QVariant > data
+                        = tracker->trackerDataAt( plotItem, trackerPos );
 
                     if ( !data.isEmpty() )
                     {
@@ -369,6 +370,12 @@ void QwtPlotTracker::setBackgroundBrush( const QBrush& brush )
 QBrush QwtPlotTracker::backgroundBrush() const
 {
     return m_data->backgroundBrush;
+}
+
+QList< QVariant > QwtPlotTracker::trackerDataAt(
+     const QwtPlotItem* plotItem, const QPointF& pos ) const
+{
+    return plotItem->trackerData( 0, pos );
 }
 
 void QwtPlotTracker::drawTracker( QPainter* painter ) const

@@ -74,6 +74,8 @@ class QWT_EXPORT QwtPlotTracker : public QwtPicker
     virtual QSize minimumSize(
         const QwtPlotItem*, const QList< QVariant >& ) const;
 
+    virtual QList< QVariant > trackerDataAt( const QwtPlotItem*, const QPointF& ) const;
+
   protected:
     virtual void drawTrackerData( QPainter*, const QwtPlotItem*,
         const QList< QVariant >&, const QRect& ) const;

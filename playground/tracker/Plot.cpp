@@ -72,42 +72,8 @@ namespace
             setSymbol( symbol );
 
             setData( new CurveData( offset, amplitude ) );
-        }
 
-        virtual QwtText trackerInfoAt( int, const QPointF& pos ) const QWT_OVERRIDE
-        {
-            const QRectF br = boundingRect();
-            if ( br.width() <= 0.0 )
-                return QwtText();
-
-            const double x = pos.x();
-
-            if ( x < br.left() || x > br.right() )
-                return QwtText();
-
-            double y;
-
-            const int index = adjacentPoint( Qt::Horizontal, x );
-
-            if ( index == -1 )
-            {
-                const QPointF last = sample( dataSize() - 1 );
-
-                if ( pos.x() != last.x() )
-                    return QwtText();
-
-                y = last.y();
-            }
-            else
-            {
-                const QLineF line( sample( index - 1 ), sample( index ) );
-                y = line.pointAt( ( x - line.p1().x() ) / line.dx() ).y();
-            }
-
-            if ( qAbs( y ) < 10e-4 )
-                y = 0.0;
-
-            return QString::number( y, 'f', 4 );
+            setTrackerMode( QwtPlotCurve::TrackInterpolatedY );
         }
     };
 

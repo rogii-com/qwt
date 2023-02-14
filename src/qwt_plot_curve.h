@@ -167,6 +167,13 @@ class QWT_EXPORT QwtPlotCurve
 
     Q_DECLARE_FLAGS( LegendAttributes, LegendAttribute )
 
+    enum TrackerMode
+    {
+        TrackClosestPoint,
+        TrackInterpolatedX,
+        TrackInterpolatedY
+    };
+
     /*!
         Attributes to modify the drawing algorithm.
         The default setting enables ClipPolygons | FilterPoints
@@ -249,6 +256,9 @@ class QWT_EXPORT QwtPlotCurve
     void setLegendAttributes( LegendAttributes );
     LegendAttributes legendAttributes() const;
 
+    void setTrackerMode( TrackerMode );
+    TrackerMode trackerMode() const;
+
     void setRawSamples( const double* xData, const double* yData, int size );
     void setRawSamples( const float* xData, const float* yData, int size );
 
@@ -272,6 +282,8 @@ class QWT_EXPORT QwtPlotCurve
 
     virtual int closestPoint( const QPointF& pos, double* dist = NULL ) const;
     int adjacentPoint( Qt::Orientation orientation, qreal value ) const;
+
+    qreal interpolatedValueAt( Qt::Orientation, double ) const;
 
     double minXValue() const;
     double maxXValue() const;

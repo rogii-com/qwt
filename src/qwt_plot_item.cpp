@@ -687,6 +687,11 @@ QwtText QwtPlotItem::trackerInfoAt( int attributes, const QPointF& pos ) const
     return QwtText();
 }
 
+QString QwtPlotItem::trackerValueText( QwtAxisId, double value ) const
+{
+    return QString::number( value, 'f', 4 );
+}
+
 /*!
    \brief Update the item to changes of the axes scale division
 
