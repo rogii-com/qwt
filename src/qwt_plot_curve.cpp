@@ -1220,12 +1220,8 @@ qreal QwtPlotCurve::interpolatedValueAt( Qt::Orientation orientation, double val
         }
     }
 
-    if ( qAbs( v ) < 10e-4 )
-        v = 0.0;
-
     return v;
 }
-
 
 QwtText QwtPlotCurve::trackerInfoAt( int attributes, const QPointF& pos ) const
 {
