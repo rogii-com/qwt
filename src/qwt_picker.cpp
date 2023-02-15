@@ -807,7 +807,7 @@ QPoint QwtPicker::trackerPosition() const
    \param font Font of the tracker text
    \return Bounding rectangle of the tracker text
 
-   \sa trackerPosition(), trackerRect( const QSize& )
+   \sa trackerPosition()
  */
 QRect QwtPicker::trackerRect( const QFont& font ) const
 {

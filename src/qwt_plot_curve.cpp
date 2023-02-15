@@ -1102,6 +1102,21 @@ int QwtPlotCurve::closestPoint( const QPointF& pos, double* dist ) const
     return index;
 }
 
+/*!
+   Find the curve point with the smallest coordinate larger than a specific value
+   The coordinates have to be monotonic in direction of the orientation.
+    
+   \param orientation Qt::Horizontal corresponds to x, Qt::Vertical to y coordinates
+   \param value x or y coordinate, depending on the orientation
+
+   \return Index of the curve point with the smalles coordinate above value
+           or -1 if there is none.
+
+   \note The implementation uses a binary search algorithm and requires the
+         points being ordered in direction of the orientation.
+
+   \sa qwtUpperSampleIndex()
+ */
 int QwtPlotCurve::adjacentPoint( Qt::Orientation orientation, qreal value ) const
 {
     const QwtSeriesData< QPointF >* data = this->data();
@@ -1136,7 +1151,23 @@ int QwtPlotCurve::adjacentPoint( Qt::Orientation orientation, qreal value ) cons
     return -1;
 }
 
-qreal QwtPlotCurve::interpolatedValueAt( Qt::Orientation orientation, double pos ) const
+/*!
+   Calculate a fictive curve point by interpolating between the adjacent
+   points. The curve points have to be monotonic in direction of the orientation.
+    
+   \param orientation For Qt::Horizontal value is a x coordinate and a y coordinate
+                      is returned. For Qt::Vertical value is a x coordinate
+   \param value x or y coordinate, depending on the orientation
+
+   \return Interpolated coordinate or qQNaN() if value is outside the bounding
+           rectangle of the curve
+
+   \note The implementation uses a binary search algorithm and requires the
+         points being ordered in direction of the orientation.
+
+   \sa adjacentPoint()
+ */
+qreal QwtPlotCurve::interpolatedValueAt( Qt::Orientation orientation, double value ) const
 {
     const QRectF br = boundingRect();
     if ( br.width() <= 0.0 )
@@ -1146,16 +1177,16 @@ qreal QwtPlotCurve::interpolatedValueAt( Qt::Orientation orientation, double pos
 
     if ( orientation == Qt::Horizontal )
     {
-        if ( pos < br.left() || pos > br.right() )
+        if ( value < br.left() || value > br.right() )
             return qQNaN();
 
-        const int index = adjacentPoint( orientation, pos );
+        const int index = adjacentPoint( orientation, value );
 
         if ( index == -1 )
         {
             const QPointF last = sample( dataSize() - 1 );
 
-            if ( pos != last.x() )
+            if ( value != last.x() )
                 return qQNaN();
 
             v = last.y();
@@ -1163,21 +1194,21 @@ qreal QwtPlotCurve::interpolatedValueAt( Qt::Orientation orientation, double pos
         else
         {
             const QLineF line( sample( index - 1 ), sample( index ) );
-            v = line.pointAt( ( pos - line.p1().x() ) / line.dx() ).y();
+            v = line.pointAt( ( value - line.p1().x() ) / line.dx() ).y();
         }
     }
     else
     {
-        if ( pos < br.top() || pos > br.bottom() )
+        if ( value < br.top() || value > br.bottom() )
             return qQNaN();
 
-        const int index = adjacentPoint( orientation, pos );
+        const int index = adjacentPoint( orientation, value );
 
         if ( index == -1 )
         {
             const QPointF last = sample( dataSize() - 1 );
 
-            if ( pos != last.y() )
+            if ( value != last.y() )
                 return qQNaN();
 
             v = last.x();
@@ -1185,7 +1216,7 @@ qreal QwtPlotCurve::interpolatedValueAt( Qt::Orientation orientation, double pos
         else
         {
             const QLineF line( sample( index - 1 ), sample( index ) );
-            v = line.pointAt( ( pos - line.p1().y() ) / line.dy() ).x();
+            v = line.pointAt( ( value - line.p1().y() ) / line.dy() ).x();
         }
     }
 
