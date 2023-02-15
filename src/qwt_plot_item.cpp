@@ -648,20 +648,32 @@ QList< QwtLegendData > QwtPlotItem::legendData() const
 
 /*!
    \brief Return all information, that is needed to represent
-          the item on the tracker of a QwtPlotPicker
+          the item on a QwtPlotTracker
 
    The data being returned is a list of QVariants that makes it
    possible to overload and reimplement trackerData() to
    return almost any type of information, that is understood
    by the receivig picker.
 
-   The default implementation in QwtPlotPicker puts each
-   element of the list into a single line, while each line might
-   consist of QwtText or QwtGraphic elements.
+   The default implementation returns a textual information
+   that is found in trackerInfoAt() and the legendIcon().
 
-   \param pos Current position of the picker
+   The default implementation in QwtPlotTracker puts each element
+   of the list into a single line, while each line might
+   consist of a QwtText and/or a QwtGraphic element.
+
+   \param attributes A placeholder that is intended to customize
+                     the communication between the tracker and the item by
+                     overloading QwtPlotTracker::trackerDataAt() and
+                     trackerData(). Unused in the default implementation.
+
+   \param pos Current position of the tracker in plot coordinates
+
+   \sa trackerInfoAt(), legendIcon(), QwtPlotItem::Tracker
+
+   \note The anticipated average way of customizing the tracker is by
+         overloading trackerInfoAt()
  */
-
 QList< QVariant > QwtPlotItem::trackerData( int attributes, const QPointF& pos ) const
 {
     QList< QVariant > data;
@@ -679,6 +691,18 @@ QList< QVariant > QwtPlotItem::trackerData( int attributes, const QPointF& pos )
     return data;
 }
 
+/*!
+   \brief Return a textual information about the item at a specific position
+
+   \param attributes A placeholder that is intended to customize
+                     the communication between the tracker and the item by
+                     overloading QwtPlotTracker::trackerDataAt() and
+                     trackerData(). Unused in the default implementation.
+
+   \param pos Current position of the tracker in plot coordinates
+
+   \return The default implementation returns an empty text
+ */
 QwtText QwtPlotItem::trackerInfoAt( int attributes, const QPointF& pos ) const
 {
     Q_UNUSED( pos );
@@ -687,7 +711,19 @@ QwtText QwtPlotItem::trackerInfoAt( int attributes, const QPointF& pos ) const
     return QwtText();
 }
 
-QString QwtPlotItem::trackerValueText( QwtAxisId, double value ) const
+/*!
+   \brief Return a textual information about a value related to a specific axis
+
+   Overloading trackerValueText() allows to customize how a value is displayed on
+   the tracker. It allows to adjust the precison/significance or to return a
+   non numeric representation.
+
+   \param axisId Axis
+   \param value Coordinate related to the axis
+
+   \return QString::number( value, 'f', 4 );
+ */
+QString QwtPlotItem::trackerValueText( QwtAxisId axisId, double value ) const
 {
     return QString::number( value, 'f', 4 );
 }
