@@ -281,7 +281,7 @@ class QWT_EXPORT QwtPlotCurve
     void setSamples( QwtSeriesData< QPointF >* );
 
     virtual int closestPoint( const QPointF& pos, double* dist = NULL ) const;
-    int adjacentPoint( Qt::Orientation orientation, qreal value ) const;
+    virtual int adjacentPoint( Qt::Orientation orientation, qreal value ) const;
 
     qreal interpolatedValueAt( Qt::Orientation, double ) const;
 
