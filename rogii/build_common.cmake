@@ -97,19 +97,19 @@ file(
     "${RELEASE_PATH}"
 )
 
-# execute_process(
-#     COMMAND
-#         "${CMAKE_COMMAND}" -DCMAKE_INSTALL_PREFIX=${ROOT}/${PACKAGE_NAME} -DCMAKE_BUILD_TYPE=RelWithDebInfo -G Ninja ..
-#     WORKING_DIRECTORY
-#         "${RELEASE_PATH}"
-# )
+execute_process(
+    COMMAND
+        "${CMAKE_COMMAND}" -DCMAKE_INSTALL_PREFIX=${ROOT}/${PACKAGE_NAME} -DCMAKE_BUILD_TYPE=RelWithDebInfo -G Ninja ..
+    WORKING_DIRECTORY
+        "${RELEASE_PATH}"
+)
 
-# execute_process(
-#     COMMAND
-#         "${CMAKE_COMMAND}" --build . --target install
-#     WORKING_DIRECTORY
-#         "${RELEASE_PATH}"
-# )
+execute_process(
+    COMMAND
+        "${CMAKE_COMMAND}" --build . --target install
+    WORKING_DIRECTORY
+        "${RELEASE_PATH}"
+)
 
 file(
     COPY
