@@ -10,7 +10,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
 set(CMAKE_DEBUG_POSTFIX d)
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+add_compile_definitions(QT_DLL QWT_DLL QWT_MAKEDLL)
 
 # prepare CNPM packages
 set(
