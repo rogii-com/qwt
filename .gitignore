@@ -1,8 +1,6 @@
 build_*/
 package/*
 
-*.bat
-
 # ignore Visual Studio generated folders and settings
 /.vs/
 /out/
