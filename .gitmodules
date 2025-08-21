@@ -1,0 +1,6 @@
+[submodule "rogii/npm"]
+	path = rogii/npm
+	url = https://github.com/rogii-com/cnpm
+[submodule "rogii/utils"]
+	path = rogii/utils
+	url = https://github.com/rogii-com/cmake-utils

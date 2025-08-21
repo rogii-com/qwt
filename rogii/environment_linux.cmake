@@ -1,0 +1,19 @@
+CNPM_ADD_PACKAGE(
+    NAME
+        gxx_runtime
+    VERSION
+        14.2.0
+    BUILD_NUMBER
+        0
+)
+
+CNPM_ADD_PACKAGE(
+    NAME
+        Qt
+    VERSION
+        6.8.1
+    BUILD_NUMBER
+        1390
+    TAG
+        "gxx14.2.0"
+)
